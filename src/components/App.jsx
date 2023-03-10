@@ -1,16 +1,49 @@
-export const App = () => {
-  return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
-      React homework template
-    </div>
-  );
-};
+export class App extends Component {
+  state = {
+    searchData: '',
+    images: [],
+    page: 0,
+    largeImage: '',
+    showModal: false,
+    isLoading: false,
+    error: null,
+    totalImages: 0,
+    isMoreBtnHide: false,
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    const prevPage = prevState.page;
+    const prevSearchData = prevState.searchData;
+    const { searchData, page } = this.state;
+    if (prevPage !== page || prevSearchData !== searchData) {
+      this.setState({ isLoading: true });
+      const response = fetchImagesWithQuery(searchData, page);
+      response
+        .then(({ data }) => {
+          if (data.hits.length < 12) {
+            this.setState({ isMoreBtnHide: true });
+          }
+          if (data.total === 0) {
+            this.setState({ isLoading: false });
+            return toast.info('Sorry, nothing was found for your search');
+          }
+          const normalizedImages = data.hits.map(
+            ({ id, webformatURL, largeImageURL }) => ({
+              id,
+              webformatURL,
+              largeImageURL,
+            })
+          );
+          this.setState(({ images }) => ({
+            images: [...images, ...normalizedImages],
+            totalImages: data.totalHits,
+          }));
+        })
+        .catch(error => {
+          this.setState({ error });
+        })
+        .finally(() => {
+          this.setState({ isLoading: false });
+        });
+    }
+  }
