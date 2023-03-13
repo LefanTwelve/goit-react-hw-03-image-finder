@@ -57,8 +57,8 @@ export class App extends Component {
   }
 
   render() {
-  const { toggleModal, openModal, onSubmit } = this;
-  const { images, isLoading, largeImage, showModal, isMoreBtnHide } = this.state;
+  // const { toggleModal, openModal, onSubmit } = this;
+  // const { images, isLoading, largeImage, showModal, isMoreBtnHide } = this.state;
 
   return (
     <div className={s.App}>
