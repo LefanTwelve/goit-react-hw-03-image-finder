@@ -1,6 +1,6 @@
 import { Component } from "react";
 import fetchImagesWithQuery from "pixabay api/api";
-import s from '.App.module.css'
+import s from './App.module.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
