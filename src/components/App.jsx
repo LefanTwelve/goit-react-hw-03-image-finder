@@ -1,3 +1,11 @@
+import { Component } from "react";
+import fetchImagesWithQuery from "pixabay api/api";
+import s from '.App.module.css'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+
 export class App extends Component {
   state = {
     searchData: '',
@@ -47,3 +55,17 @@ export class App extends Component {
         });
     }
   }
+
+  render() {
+  const { toggleModal, openModal, onSubmit } = this;
+  const { images, isLoading, largeImage, showModal, isMoreBtnHide } = this.state;
+
+  return (
+    <div className={s.App}>
+      <ToastContainer autoClose={2500}/>
+      
+    </div>
+  );
+}
+} 
+
