@@ -1,10 +1,13 @@
-import { Component } from "react";
-import fetchImagesWithQuery from "pixabay api/api";
+import Searchbar from './Searchbar/Searchbar';
+import ImageGallery from './ImageGallery/ImageGallery';
+import fetchImagesWithQuery from 'pixabay api/api';
+import Modal from './Modal/Modal';
+import Loader from './Loader/Loader';
+import Button from './Button/Button';
 import s from './App.module.css';
+import { Component } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-
 
 export class App extends Component {
   state = {
@@ -56,16 +59,60 @@ export class App extends Component {
     }
   }
 
-  render() {
-  // const { toggleModal, openModal, onSubmit } = this;
-  // const { images, isLoading, largeImage, showModal, isMoreBtnHide } = this.state;
+  onSubmit = searchData => {
+    if (searchData.trim() === '') {
+      return toast.error('Enter the meaning for search');
+    } else if (searchData === this.state.searchData) {
+      return;
+    }
+    this.setState({
+      searchData: searchData,
+      page: 1,
+      images: [],
+      isLoading: true,
+      isMoreBtnHide: false,
+    });
+  };
 
-  return (
-    <div className={s.App}>
-      <ToastContainer autoClose={2500}/>
-      
-    </div>
-  );
+  
+  handleMoreSearch = () => {
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+      isLoading: true,
+    }));
+  };
+  openModal = index => {
+    this.setState(({ images }) => ({
+      showModal: true,
+      largeImage: images[index].largeImageURL,
+    }));
+  };
+
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({ showModal: !showModal }));
+  };
+
+  render() {
+    const { toggleModal, openModal, onSubmit } = this;
+    const { images, isLoading, largeImage, showModal, isMoreBtnHide } =
+      this.state;
+
+    return (
+      <div className={s.App}>
+        <Searchbar onSubmit={onSubmit} />
+        {images.length !== 0 && (
+          <ImageGallery images={images} openModal={openModal} />
+        )}
+        {showModal && (
+          <Modal toggleModal={toggleModal} largeImage={largeImage} />
+        )}
+        {isLoading && <Loader />}
+        <ToastContainer autoClose={2500} />
+        {images.length > 0 && !isLoading && !isMoreBtnHide && (
+          <Button onClick={this.handleMoreSearch} />
+        )}
+      </div>
+    );
+  }
 }
-} 
 
